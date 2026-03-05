@@ -28,7 +28,7 @@ app.get("/testDecoration", async (req, res) => {
 
     let sampleDecoration = new Decoration({
         title: "Wedding Stage Decoration",
-        price: 25000,
+        price: 26000,
         image: "https://example.com/wedding.jpg",
         description: "Beautiful wedding stage decoration with flowers"
     });
