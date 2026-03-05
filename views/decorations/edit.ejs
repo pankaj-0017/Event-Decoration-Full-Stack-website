@@ -1,0 +1,19 @@
+<h1>Edit Decoration</h1>
+
+<form action="/decorations/<%= decoration._id %>?_method=PUT" method="POST">
+
+    <input name="title" value="<%= decoration.title %>">
+    <br><br>
+
+    <input name="price" value="<%= decoration.price %>">
+    <br><br>
+
+    <input name="image" value="<%= decoration.image %>">
+    <br><br>
+
+    <textarea name="description"><%= decoration.description %></textarea>
+    <br><br>
+
+    <button>Update Decoration</button>
+
+</form>

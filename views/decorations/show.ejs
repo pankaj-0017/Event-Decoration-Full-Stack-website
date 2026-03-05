@@ -1,0 +1,19 @@
+<h1>Decoration Details</h1>
+
+<h2><%= decoration.title %></h2>
+
+<p><strong>Price:</strong> ₹<%= decoration.price %></p>
+
+<img src="<%= decoration.image %>" width="400">
+
+<p><%= decoration.description %></p>
+
+<a href="/decorations/<%= decoration._id %>/edit">Edit</a>
+<br>
+<br>
+<form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST">
+    <button>Delete</button>
+</form>
+<br>
+
+<a href="/decorations">Back to Decorations</a>

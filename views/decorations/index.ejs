@@ -1,0 +1,20 @@
+<h1>All Decorations</h1>
+
+<a href="/decorations/new">Add New Decoration</a>
+
+<hr>
+
+<% for(let decoration of decorations) { %>
+
+    <h3>
+        <a href="/decorations/<%= decoration._id %>">
+            <%= decoration.title %>
+        </a>
+    </h3>
+
+    <p>Price: ₹<%= decoration.price %></p>
+    <p><%= decoration.description %></p>
+
+    <hr>
+
+<% } %>
