@@ -1,0 +1,68 @@
+const Decoration = require("./models/decoration");
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+
+const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+/* MongoDB connection */
+
+mongoose.connect("mongodb://127.0.0.1:27017/Decoration")
+.then(() => {
+    console.log("MongoDB Connected");
+})
+.catch((err) => {
+    console.log(err);
+});
+
+/* Test Route */
+
+app.get("/", (req, res) => {
+    res.send("Decoration Website Backend Running");
+});
+
+app.get("/testDecoration", async (req, res) => {
+
+    let sampleDecoration = new Decoration({
+        title: "Wedding Stage Decoration",
+        price: 25000,
+        image: "https://example.com/wedding.jpg",
+        description: "Beautiful wedding stage decoration with flowers"
+    });
+
+    await sampleDecoration.save();
+
+    res.send("Decoration saved to database");
+});
+
+app.get("/decorations", async (req, res) => {
+
+    let decorations = await Decoration.find({});
+
+    res.send(decorations);
+
+});
+
+app.get("/decorations/new", (req, res) => {
+    res.render("decorations/new");
+});
+
+app.get("/decorations/:id", async (req, res) => {
+
+    let { id } = req.params;
+
+    let decoration = await Decoration.findById(id);
+
+    res.send(decoration);
+
+});
+
+
+/* Server */
+
+app.listen(3000, () => {
+    console.log("Server started on port 3000");
+});
