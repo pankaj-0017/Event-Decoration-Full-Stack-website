@@ -1,19 +1,51 @@
-<h1>Decoration Details</h1>
+<% layout("layouts/boilerplate") %>
+<h1 class="mb-4"><%= decoration.title %></h1>
 
-<h2><%= decoration.title %></h2>
+<div class="row">
 
-<p><strong>Price:</strong> ₹<%= decoration.price %></p>
+<div class="col-md-6">
 
-<img src="<%= decoration.image %>" width="400">
+<img 
+src="<%= decoration.image %>" 
+class="img-fluid rounded shadow"
+style="height:400px; object-fit:cover;"
+>
 
-<p><%= decoration.description %></p>
+</div>
 
-<a href="/decorations/<%= decoration._id %>/edit">Edit</a>
-<br>
-<br>
-<form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST">
-    <button>Delete</button>
+<div class="col-md-6">
+
+<h4 class="text-muted mb-3">
+Price: ₹ <%= decoration.price %>
+</h4>
+
+<p class="mb-4">
+<%= decoration.description %>
+</p>
+
+<a 
+href="/decorations/<%= decoration._id %>/edit" 
+class="btn btn-warning me-2">
+Edit
+</a>
+
+<form 
+action="/decorations/<%= decoration._id %>?_method=DELETE" 
+method="POST" 
+style="display:inline">
+
+<button class="btn btn-danger">
+Delete
+</button>
+
 </form>
-<br>
 
-<a href="/decorations">Back to Decorations</a>
+<br><br>
+
+<a href="/decorations" class="btn btn-secondary">
+Back to Decorations
+</a>
+
+</div>
+
+</div>
