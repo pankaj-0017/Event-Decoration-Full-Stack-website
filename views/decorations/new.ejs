@@ -1,7 +1,7 @@
 <% layout("layouts/boilerplate") %>
 <h1>Add New Decoration</h1>
 
-<form action="/decorations" method="POST">
+<form action="/decorations" method="POST" enctype="multipart/form-data">
 
     <input type="text" name="title" placeholder="Enter decoration title">
     <br><br>
@@ -9,7 +9,7 @@
     <input type="number" name="price" placeholder="Enter price">
     <br><br>
 
-    <input type="text" name="image" placeholder="Enter image URL">
+    <input type="file" name="image" class="form-control">
     <br><br>
 
     <textarea name="description" placeholder="Enter description"></textarea>

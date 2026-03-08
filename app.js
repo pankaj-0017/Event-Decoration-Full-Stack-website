@@ -1,3 +1,6 @@
+
+const multer = require("multer");
+const { storage } = require("./cloudConfig/cloudinary");
 const session = require("express-session");
 const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
@@ -7,6 +10,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 
+const upload = multer({ storage });
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -110,9 +114,11 @@ app.get("/decorations/new", isAdmin, (req, res) => {
 
 /* Create Decoration */
 
-app.post("/decorations", isAdmin, async (req, res) => {
+app.post("/decorations", isAdmin, upload.single("image"), async (req, res) => {
 
     let newDecoration = new Decoration(req.body);
+
+    newDecoration.image = req.file.path;
 
     await newDecoration.save();
 
