@@ -1,3 +1,5 @@
+const session = require("express-session");
+const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const Decoration = require("./models/decoration");
@@ -24,6 +26,40 @@ mongoose.connect("mongodb://127.0.0.1:27017/decorations")
 .catch((err) => {
     console.log(err);
 });
+
+app.use(session({
+    secret:"decorationsite",
+    resave:false,
+    saveUninitialized:true
+}));
+app.use(flash());
+
+app.use((req, res, next) => {
+
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+
+    next();
+
+});
+
+app.use((req, res, next) => {
+
+    res.locals.admin = req.session.admin;
+
+    next();
+
+});
+
+function isAdmin(req,res,next){
+
+    if(req.session.admin){
+        next();
+    }else{
+        res.redirect("/admin/login");
+    }
+
+}
 
 /* Home Route */
 
@@ -68,16 +104,19 @@ app.get("/decorations", async (req, res) => {
 
 /* New Decoration Form */
 
-app.get("/decorations/new", (req, res) => {
+app.get("/decorations/new", isAdmin, (req, res) => {
     res.render("decorations/new");
 });
 
 /* Create Decoration */
 
-app.post("/decorations", async (req, res) => {
+app.post("/decorations", isAdmin, async (req, res) => {
 
     let newDecoration = new Decoration(req.body);
+
     await newDecoration.save();
+
+    req.flash("success", "Decoration added successfully!");
 
     res.redirect("/decorations");
 
@@ -85,7 +124,7 @@ app.post("/decorations", async (req, res) => {
 
 /* Edit Decoration */
 
-app.get("/decorations/:id/edit", async (req, res) => {
+app.get("/decorations/:id/edit", isAdmin, async (req, res) => {
 
     let { id } = req.params;
     let decoration = await Decoration.findById(id);
@@ -96,11 +135,13 @@ app.get("/decorations/:id/edit", async (req, res) => {
 
 /* Update Decoration */
 
-app.put("/decorations/:id", async (req, res) => {
+app.put("/decorations/:id", isAdmin, async (req, res) => {
 
     let { id } = req.params;
 
     await Decoration.findByIdAndUpdate(id, req.body);
+
+    req.flash("success","Decoration updated successfully!");
 
     res.redirect(`/decorations/${id}`);
 
@@ -108,16 +149,17 @@ app.put("/decorations/:id", async (req, res) => {
 
 /* Delete Decoration */
 
-app.delete("/decorations/:id", async (req, res) => {
+app.delete("/decorations/:id", isAdmin, async (req, res) => {
 
     let { id } = req.params;
 
     await Decoration.findByIdAndDelete(id);
 
+    req.flash("success","Decoration deleted successfully!");
+
     res.redirect("/decorations");
 
 });
-
 /* Show Decoration Details (Dynamic Route LAST) */
 
 app.get("/decorations/:id", async (req, res) => {
@@ -130,6 +172,54 @@ app.get("/decorations/:id", async (req, res) => {
 
 });
 
+app.get("/admin/login", (req,res)=>{
+    res.render("admin/login");
+});
+
+app.post("/admin/login",(req,res)=>{
+
+    const {username,password} = req.body;
+
+    if(username==="admin" && password==="1234"){
+        req.session.admin = true;
+
+        req.flash("success","Login successful!");
+
+        res.redirect("/decorations");
+
+    }else{
+
+        req.flash("error","Invalid username or password");
+
+        res.redirect("/admin/login");
+
+    }
+
+});
+
+app.get("/admin/logout", (req, res) => {
+
+    req.session.destroy();
+
+    res.redirect("/decorations");
+
+});
+
+app.use((req, res) => {
+    res.status(404).render("errors/error", {
+        err: { message: "Page Not Found!" }
+    });
+});
+
+app.use((err, req, res, next) => {
+
+    console.log(err);
+
+    let { message = "Something went wrong!" } = err;
+
+    res.status(500).render("errors/error", { err });
+
+});
 /* Server */
 
 app.listen(3000, () => {
