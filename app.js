@@ -1,4 +1,4 @@
-
+require("dotenv").config();
 const multer = require("multer");
 const { storage } = require("./cloudConfig/cloudinary");
 const session = require("express-session");
@@ -114,17 +114,28 @@ app.get("/decorations/new", isAdmin, (req, res) => {
 
 /* Create Decoration */
 
-app.post("/decorations", isAdmin, upload.single("image"), async (req, res) => {
+app.post("/decorations", isAdmin, upload.fields([
+{ name: "images", maxCount: 10 },
+{ name: "video", maxCount: 1 }
+]), async (req,res)=>{
 
-    let newDecoration = new Decoration(req.body);
+let newDecoration = new Decoration(req.body);
 
-    newDecoration.image = req.file.path;
+// save images
+if(req.files.images){
+newDecoration.images = req.files.images.map(file => file.path);
+}
 
-    await newDecoration.save();
+// save video
+if(req.files.video){
+newDecoration.video = req.files.video[0].path;
+}
 
-    req.flash("success", "Decoration added successfully!");
+await newDecoration.save();
 
-    res.redirect("/decorations");
+req.flash("success","Decoration added successfully");
+
+res.redirect("/decorations");
 
 });
 

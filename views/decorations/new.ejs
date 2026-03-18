@@ -3,6 +3,11 @@
 
 <form action="/decorations" method="POST" enctype="multipart/form-data">
 
+    <div class="mb-3">
+    <label class="form-label">Decoration Images</label>
+    <input type="file" name="images" multiple class="form-control">
+    </div>
+
     <input type="text" name="title" placeholder="Enter decoration title">
     <br><br>
 
@@ -11,6 +16,14 @@
 
     <input type="file" name="image" class="form-control">
     <br><br>
+
+    <div class="mb-3">
+
+<label class="form-label">Decoration Video</label>
+
+<input type="file" name="video" class="form-control">
+
+</div>
 
     <textarea name="description" placeholder="Enter description"></textarea>
     <br><br>

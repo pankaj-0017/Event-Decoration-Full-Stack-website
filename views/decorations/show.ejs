@@ -1,47 +1,110 @@
 <% layout("layouts/boilerplate") %>
-<h1 class="mb-4"><%= decoration.title %></h1>
 
-<div class="row">
+<div class="container mt-4">
 
-<div class="col-md-6">
+<div class="row g-4">
 
-<img 
-src="<%= decoration.image %>" 
-class="img-fluid rounded shadow"
-style="height:400px; object-fit:cover;"
->
+<!-- LEFT SIDE : IMAGE + GALLERY -->
+
+<div class="col-lg-7">
+
+<div class="card shadow-sm p-3">
+
+<!-- Main Image -->
+
+<!-- Main Image -->
+
+<% let mainImage = decoration.images && decoration.images.length ? decoration.images[0] : decoration.image; %>
+
+<a href="<%= mainImage %>" class="gallery-lightbox">
+<img src="<%= mainImage %>" class="show-img">
+</a>
+
+<!-- Image Gallery -->
+
+<% if(decoration.images && decoration.images.length){ %>
+
+<div class="row mt-3">
+
+<% if(decoration.images){ %>
+
+<% decoration.images.forEach(function(img){ %>
+
+<div class="col-md-4 mb-3">
+
+<img src="<%= img %>" class="gallery-img">
 
 </div>
 
-<div class="col-md-6">
+<% }) %>
 
-<h4 class="text-muted mb-3">
-Price: ₹ <%= decoration.price %>
+<% } %>
+
+</div>
+<!-- VIDEO SECTION -->
+
+<% if(decoration.video){ %>
+
+<div class="mt-4">
+
+<video width="100%" controls>
+
+<source src="<%= decoration.video %>" type="video/mp4">
+
+</video>
+
+</div>
+
+<% } %>
+
+</div>
+
+
+<!-- RIGHT SIDE : DETAILS -->
+
+<div class="col-lg-5">
+
+<div class="card shadow-sm p-4">
+
+<h2 class="mb-3">
+<%= decoration.title %>
+</h2>
+
+<h4 class="text-primary mb-3">
+₹ <%= decoration.price %>
 </h4>
 
-<p class="mb-4">
+<p class="text-muted mb-4">
 <%= decoration.description %>
 </p>
 
 <% if(admin){ %>
 
+<div class="d-flex gap-2 mb-3">
+
 <a href="/decorations/<%= decoration._id %>/edit" class="btn btn-warning">
 Edit
 </a>
 
-<form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST" style="display:inline">
+<form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST">
+
 <button class="btn btn-danger">
 Delete
 </button>
+
 </form>
+
+</div>
 
 <% } %>
 
-<br><br>
-
 <a href="/decorations" class="btn btn-secondary">
-Back to Decorations
+← Back to Decorations
 </a>
+
+</div>
+
+</div>
 
 </div>
 
