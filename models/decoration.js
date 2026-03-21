@@ -8,14 +8,14 @@ price: Number,
 
 description: String,
 
-images: [String],   // multiple images
+images: {
+type: [String],
+default: []
+},
 
 video: String       // one video
 
 });
-
-module.exports = mongoose.model("Decoration", decorationSchema);
-
 const Decoration = mongoose.model("Decoration", decorationSchema);
 
 module.exports = Decoration;

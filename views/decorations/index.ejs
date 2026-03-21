@@ -28,12 +28,13 @@ No decorations available yet. Please add a decoration.
 <% } else { %>
 
 <% for(let decoration of decorations){ %>
+<% const cardImage = (decoration.images && decoration.images.length) ? decoration.images[0] : decoration.image; %>
 
 <div class="col-lg-4 col-md-6 mb-4">
 
 <div class="card shadow-sm">
 
-<img src="<%= decoration.image %>" class="card-img-top">
+<img src="<%= cardImage %>" class="card-img-top">
 
 <div class="card-body">
 

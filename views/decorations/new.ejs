@@ -1,33 +1,34 @@
 <% layout("layouts/boilerplate") %>
-<h1>Add New Decoration</h1>
 
-<form action="/decorations" method="POST" enctype="multipart/form-data">
+<h1 class="mb-4">Add New Decoration</h1>
 
+<form action="/decorations" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
     <div class="mb-3">
-    <label class="form-label">Decoration Images</label>
-    <input type="file" name="images" multiple class="form-control">
+        <label for="title" class="form-label">Decoration Title</label>
+        <input id="title" type="text" name="title" class="form-control" placeholder="Enter decoration title" required>
     </div>
 
-    <input type="text" name="title" placeholder="Enter decoration title">
-    <br><br>
-
-    <input type="number" name="price" placeholder="Enter price">
-    <br><br>
-
-    <input type="file" name="image" class="form-control">
-    <br><br>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input id="price" type="number" name="price" class="form-control" placeholder="Enter price" required>
+    </div>
 
     <div class="mb-3">
+        <label for="images" class="form-label">Decoration Images</label>
+        <input id="images" type="file" name="images" multiple class="form-control" accept="image/*">
+        <div class="form-text">You can upload up to 10 images.</div>
+    </div>
 
-<label class="form-label">Decoration Video</label>
+    <div class="mb-3">
+        <label for="video" class="form-label">Decoration Video</label>
+        <input id="video" type="file" name="video" class="form-control" accept="video/mp4,video/quicktime,video/webm">
+        <div class="form-text">Optional. Supported formats: MP4, MOV, and WEBM.</div>
+    </div>
 
-<input type="file" name="video" class="form-control">
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="4" placeholder="Enter description"></textarea>
+    </div>
 
-</div>
-
-    <textarea name="description" placeholder="Enter description"></textarea>
-    <br><br>
-
-    <button type="submit">Add Decoration</button>
-
+    <button type="submit" class="btn btn-primary">Add Decoration</button>
 </form>

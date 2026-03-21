@@ -1,20 +1,51 @@
 <% layout("layouts/boilerplate") %>
-<h1>Edit Decoration</h1>
+<%
+const existingImages = (decoration.images && decoration.images.length)
+    ? decoration.images
+    : (decoration.image ? [decoration.image] : []);
+%>
 
-<form action="/decorations/<%= decoration._id %>?_method=PUT" method="POST">
+<h1 class="mb-4">Edit Decoration</h1>
 
-    <input name="title" value="<%= decoration.title %>">
-    <br><br>
+<form action="/decorations/<%= decoration._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <label for="title" class="form-label">Decoration Title</label>
+        <input id="title" type="text" name="title" value="<%= decoration.title %>" class="form-control" required>
+    </div>
 
-    <input name="price" value="<%= decoration.price %>">
-    <br><br>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input id="price" type="number" name="price" value="<%= decoration.price %>" class="form-control" required>
+    </div>
 
-    <input name="image" value="<%= decoration.image %>">
-    <br><br>
+    <% if (existingImages.length) { %>
+        <div class="mb-3">
+            <label class="form-label">Current Images</label>
+            <div class="row g-3">
+                <% existingImages.forEach(function(img, index) { %>
+                    <div class="col-sm-6 col-md-4">
+                        <img src="<%= img %>" alt="Decoration image <%= index + 1 %>" class="gallery-img">
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    <% } %>
 
-    <textarea name="description"><%= decoration.description %></textarea>
-    <br><br>
+    <div class="mb-3">
+        <label for="images" class="form-label">Upload New Images</label>
+        <input id="images" type="file" name="images" multiple class="form-control" accept="image/*">
+        <div class="form-text">Uploading new images will replace the current image gallery.</div>
+    </div>
 
-    <button>Update Decoration</button>
+    <div class="mb-3">
+        <label for="video" class="form-label">Replace Video</label>
+        <input id="video" type="file" name="video" class="form-control" accept="video/*">
+    </div>
 
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="4"><%= decoration.description %></textarea>
+    </div>
+
+    <button class="btn btn-primary">Update Decoration</button>
 </form>

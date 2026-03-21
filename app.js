@@ -65,6 +65,10 @@ function isAdmin(req,res,next){
 
 }
 
+function getUploadedFileUrl(file) {
+    return file.path || file.secure_url || file.url;
+}
+
 /* Home Route */
 
 app.get("/", (req, res) => {
@@ -88,7 +92,7 @@ app.get("/testDecoration", async (req, res) => {
     let sampleDecoration = new Decoration({
         title: "Wedding Stage Decoration",
         price: 26000,
-        image: "https://example.com/wedding.jpg",
+        images: ["https://example.com/wedding.jpg"],
         description: "Beautiful wedding stage decoration with flowers"
     });
 
@@ -118,24 +122,22 @@ app.post("/decorations", isAdmin, upload.fields([
 { name: "images", maxCount: 10 },
 { name: "video", maxCount: 1 }
 ]), async (req,res)=>{
+    const imageFiles = req.files?.images || [];
+    const videoFile = req.files?.video?.[0];
 
-let newDecoration = new Decoration(req.body);
+    let newDecoration = new Decoration({
+        title: req.body.title ? req.body.title.trim() : "",
+        price: Number(req.body.price),
+        description: req.body.description ? req.body.description.trim() : "",
+        images: imageFiles.map(getUploadedFileUrl).filter(Boolean),
+        video: videoFile ? getUploadedFileUrl(videoFile) : undefined
+    });
 
-// save images
-if(req.files.images){
-newDecoration.images = req.files.images.map(file => file.path);
-}
+    await newDecoration.save();
 
-// save video
-if(req.files.video){
-newDecoration.video = req.files.video[0].path;
-}
+    req.flash("success","Decoration added successfully");
 
-await newDecoration.save();
-
-req.flash("success","Decoration added successfully");
-
-res.redirect("/decorations");
+    res.redirect("/decorations");
 
 });
 
@@ -152,11 +154,27 @@ app.get("/decorations/:id/edit", isAdmin, async (req, res) => {
 
 /* Update Decoration */
 
-app.put("/decorations/:id", isAdmin, async (req, res) => {
+app.put("/decorations/:id", isAdmin, upload.fields([
+{ name: "images", maxCount: 10 },
+{ name: "video", maxCount: 1 }
+]), async (req, res) => {
 
     let { id } = req.params;
+    let decoration = await Decoration.findById(id);
 
-    await Decoration.findByIdAndUpdate(id, req.body);
+    decoration.title = req.body.title;
+    decoration.price = req.body.price;
+    decoration.description = req.body.description;
+
+    if(req.files && req.files.images && req.files.images.length){
+        decoration.images = req.files.images.map(getUploadedFileUrl).filter(Boolean);
+    }
+
+    if(req.files && req.files.video && req.files.video.length){
+        decoration.video = getUploadedFileUrl(req.files.video[0]);
+    }
+
+    await decoration.save();
 
     req.flash("success","Decoration updated successfully!");
 

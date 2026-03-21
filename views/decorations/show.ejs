@@ -1,111 +1,95 @@
 <% layout("layouts/boilerplate") %>
+<%
+const imageList = (decoration.images && decoration.images.length)
+    ? decoration.images
+    : (decoration.image ? [decoration.image] : []);
+const mainImage = imageList.length ? imageList[0] : "";
+const whatsappMessage = encodeURIComponent(
+    `Hello I want to order "${decoration.title}" Decoration.\nPrice: ₹${decoration.price}`
+);
+%>
 
 <div class="container mt-4">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm p-3">
+                <% if (mainImage) { %>
+                    <a href="<%= mainImage %>" class="gallery-lightbox d-block">
+                        <img src="<%= mainImage %>" alt="<%= decoration.title %>" class="show-img">
+                    </a>
+                <% } else { %>
+                    <div class="show-img d-flex align-items-center justify-content-center bg-light text-muted">
+                        No image available
+                    </div>
+                <% } %>
 
-<div class="row g-4">
+                <% if (imageList.length > 1) { %>
+                    <div class="row mt-3 g-3">
+                        <% imageList.forEach(function(img, index) { %>
+                            <div class="col-sm-6 col-md-4">
+                                <a
+                                    href="<%= img %>"
+                                    class="gallery-lightbox d-block"
+                                    data-gallery="decoration-images"
+                                    aria-label="View image <%= index + 1 %>"
+                                >
+                                    <img src="<%= img %>" alt="<%= decoration.title %> image <%= index + 1 %>" class="gallery-img">
+                                </a>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
 
-<!-- LEFT SIDE : IMAGE + GALLERY -->
+                <% if (decoration.video) { %>
+                    <div class="mt-4">
+                        <h5 class="mb-3">Video Gallery</h5>
+                        <div class="video-frame">
+                            <video class="video-player" controls preload="metadata">
+                                <source src="<%= decoration.video %>" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <a
+                            href="<%= decoration.video %>"
+                            class="btn btn-outline-dark btn-sm mt-3 gallery-lightbox"
+                            data-type="video"
+                        >
+                            Open video in lightbox
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
 
-<div class="col-lg-7">
+        <div class="col-lg-5">
+            <div class="card shadow-sm p-4">
+                <h2 class="mb-3"><%= decoration.title %></h2>
 
-<div class="card shadow-sm p-3">
+                <h4 class="text-primary mb-3">Rs. <%= decoration.price %></h4>
 
-<!-- Main Image -->
+                <p class="text-muted mb-4"><%= decoration.description %></p>
 
-<!-- Main Image -->
+                <a
+                    href="https://wa.me/919518537865?text=<%= whatsappMessage %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="whatsapp-btn"
+                >
+                    Order on WhatsApp
+                </a>
 
-<% let mainImage = decoration.images && decoration.images.length ? decoration.images[0] : decoration.image; %>
+                <% if (admin) { %>
+                    <div class="d-flex gap-2 mb-3">
+                        <a href="/decorations/<%= decoration._id %>/edit" class="btn btn-warning">Edit</a>
 
-<a href="<%= mainImage %>" class="gallery-lightbox">
-<img src="<%= mainImage %>" class="show-img">
-</a>
+                        <form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                <% } %>
 
-<!-- Image Gallery -->
-
-<% if(decoration.images && decoration.images.length){ %>
-
-<div class="row mt-3">
-
-<% if(decoration.images){ %>
-
-<% decoration.images.forEach(function(img){ %>
-
-<div class="col-md-4 mb-3">
-
-<img src="<%= img %>" class="gallery-img">
-
-</div>
-
-<% }) %>
-
-<% } %>
-
-</div>
-<!-- VIDEO SECTION -->
-
-<% if(decoration.video){ %>
-
-<div class="mt-4">
-
-<video width="100%" controls>
-
-<source src="<%= decoration.video %>" type="video/mp4">
-
-</video>
-
-</div>
-
-<% } %>
-
-</div>
-
-
-<!-- RIGHT SIDE : DETAILS -->
-
-<div class="col-lg-5">
-
-<div class="card shadow-sm p-4">
-
-<h2 class="mb-3">
-<%= decoration.title %>
-</h2>
-
-<h4 class="text-primary mb-3">
-₹ <%= decoration.price %>
-</h4>
-
-<p class="text-muted mb-4">
-<%= decoration.description %>
-</p>
-
-<% if(admin){ %>
-
-<div class="d-flex gap-2 mb-3">
-
-<a href="/decorations/<%= decoration._id %>/edit" class="btn btn-warning">
-Edit
-</a>
-
-<form action="/decorations/<%= decoration._id %>?_method=DELETE" method="POST">
-
-<button class="btn btn-danger">
-Delete
-</button>
-
-</form>
-
-</div>
-
-<% } %>
-
-<a href="/decorations" class="btn btn-secondary">
-← Back to Decorations
-</a>
-
-</div>
-
-</div>
-
-</div>
-
+                <a href="/decorations" class="btn btn-secondary">Back to Decorations</a>
+            </div>
+        </div>
+    </div>
 </div>
